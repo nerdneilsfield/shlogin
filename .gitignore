@@ -17,9 +17,20 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
+# Dist directory
+dist/
+
 # Go workspace file
 go.work
 go.work.sum
 
 # env file
 .env
+
+# config file
+config_test.toml
+config_test.json
+config.toml
+config.json
+test_log.log
+main

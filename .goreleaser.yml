@@ -1,0 +1,203 @@
+version: 2
+env:
+  - GO111MODULE=on
+  - CGO_ENABLED=0
+
+# before:
+#   hooks:
+#     - ./scripts/manpages.sh
+#     - ./scripts/completions.sh
+
+builds:
+  -
+    binary: shlogin
+    ldflags:
+      - -s -w
+      - -X main.version={{ .Version }}
+      - -X main.buildTime={{ .Date }}
+      - -X main.gitCommit={{ .FullCommit }}
+    goos:
+      - linux
+      - darwin
+      - windows
+      - freebsd
+    goarch:
+      - amd64
+      - arm64
+      - arm
+      - mips64
+      - mips64le
+      - mipsle
+      - riscv64
+    goarm:
+      - 7
+    overrides:
+      - goos: darwin
+        goarch: amd64
+        ldflags:
+          - -s -w
+        env:
+          - CGO_ENABLED=0
+      - goos: darwin
+        goarch: arm64
+        ldflags:
+          - -s -w
+        env:
+          - CGO_ENABLED=0
+      - goos: linux
+        ldflags:
+          - -s -w -extldflags "-static"
+          - -X main.version={{ .Version }}
+          - -X main.buildTime={{ .Date }}
+          - -X main.gitCommit={{ .FullCommit }}
+
+
+archives:
+  -
+    builds:
+      - shlogin
+    format_overrides:
+      - goos: windows
+        format: zip
+
+nfpms:
+  - builds:
+      - shlogin
+    vendor: nerdneilsfield
+    homepage:  https://github.com/nerdneilsfield/shlogin
+    maintainer: "dengqqi <dengqqi935@gmail.com>"
+    description: "A command line tool to login to ShanghaiTech Network"
+    license: MIT
+    formats:
+      - apk
+      - deb
+      - rpm
+      - archlinux
+      - termux.deb
+    bindir: /usr/bin
+    contents:
+      - src: ./scripts/systemctl/shlogin@.service
+        dst: /lib/systemd/system/shlogin@.service
+        type: config
+        packager: deb
+      - src: ./scripts/systemctl/shlogin@.service
+        dst: /lib/systemd/system/shlogin@.service
+        type: config
+        packager: archlinux
+      - src: ./scripts/systemctl/shlogin@.service
+        dst: /usr/lib/systemd/system/shlogin@.service
+        type: config
+        packager: rpm
+      - src: ./scripts/rc/shlogin
+        dst: /etc/init.d/shlogin
+        type: config
+        packager: apk
+    #   - src: ./manpages/shlogin.1.gz
+    #     dst: /usr/share/man/man1/shlogin.1.gz
+    #     file_info:
+    #       mode: 0644
+    #   - src: ./completions/shlogin.bash
+    #     dst: /usr/share/bash-completion/completions/shlogin
+    #     file_info:
+    #       mode: 0644
+    #   - src: ./completions/shlogin.fish
+    #     dst: /usr/share/fish/vendor_completions.d/shlogin.fish
+    #     file_info:
+    #       mode: 0644
+    #   - src: ./completions/shlogin.zsh
+    #     dst:  /usr/share/zsh/vendor-completions/_shlogin
+    #     file_info:
+    #       mode: 0644
+    scripts:
+      postinstall: ./scripts/post-install.sh
+      postremove: ./scripts/post-remove.sh
+
+# dockers:
+# - image_templates:
+#   - 'falcosuessgott/{{.ProjectName}}:{{ .Tag }}-amd64'
+#   - 'ghcr.io/falcosuessgott/{{.ProjectName}}:{{ .Tag }}-amd64'
+#   dockerfile: Dockerfile
+#   use: buildx
+#   build_flag_templates:
+#   - "--pull"
+#   - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/FalcoSuessgott/golang-cli-template/master/README.md"
+#   - "--label=io.artifacthub.package.maintainers=[{\"name\":\"Tom Morelly\",\"email\":\"tommorelly@gmail.com\"}]"
+#   - "--label=io.artifacthub.package.license=MIT"
+#   - "--label=org.opencontainers.image.description=A general purpose golang CLI template for Github and Gitlab"
+#   - "--label=org.opencontainers.image.created={{.Date}}"
+#   - "--label=org.opencontainers.image.name={{.ProjectName}}"
+#   - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+#   - "--label=org.opencontainers.image.version={{.Version}}"
+#   - "--label=org.opencontainers.image.source={{.GitURL}}"
+#   - "--platform=linux/amd64"
+# - image_templates:
+#   - 'falcosuessgott/{{.ProjectName}}:{{ .Tag }}-arm64'
+#   - 'ghcr.io/falcosuessgott/{{.ProjectName}}:{{ .Tag }}-arm64'
+#   dockerfile:  Dockerfile
+#   use: buildx
+#   build_flag_templates:
+#   - "--pull"
+#   - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/FalcoSuessgott/golang-cli-template/master/README.md"
+#   - "--label=io.artifacthub.package.logo-url=https://raw.githubusercontent.com/FalcoSuessgott/golang-cli-template/master/www/static/images/logo.png"
+#   - "--label=io.artifacthub.package.maintainers=[{\"name\":\"Tom Morelly\",\"email\":\"tommorelly@gmail.com\"}]"
+#   - "--label=io.artifacthub.package.license=MIT"
+#   - "--label=org.opencontainers.image.description=A general purpose golang CLI template for Github and Gitlab"
+#   - "--label=org.opencontainers.image.created={{.Date}}"
+#   - "--label=org.opencontainers.image.name={{.ProjectName}}"
+#   - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+#   - "--label=org.opencontainers.image.version={{.Version}}"
+#   - "--label=org.opencontainers.image.source={{.GitURL}}"
+#   - "--platform=linux/arm64"
+#   goarch: arm64
+
+# docker_manifests:
+# - name_template: 'falcosuessgott/{{.ProjectName}}:{{ .Tag }}'
+#   image_templates:
+#   - 'falcosuessgott/{{.ProjectName}}:{{ .Tag }}-amd64'
+#   - 'falcosuessgott/{{.ProjectName}}:{{ .Tag }}-arm64'
+# - name_template: 'ghcr.io/falcosuessgott/{{.ProjectName}}:{{ .Tag }}'
+#   image_templates:
+#   - 'ghcr.io/falcosuessgott/{{.ProjectName}}:{{ .Tag }}-amd64'
+#   - 'ghcr.io/falcosuessgott/{{.ProjectName}}:{{ .Tag }}-arm64'
+# - name_template: 'falcosuessgott/{{.ProjectName}}:latest'
+#   image_templates:
+#   - 'falcosuessgott/{{.ProjectName}}:{{ .Tag }}-amd64'
+#   - 'falcosuessgott/{{.ProjectName}}:{{ .Tag }}-arm64'
+# - name_template: 'ghcr.io/falcosuessgott/{{.ProjectName}}:latest'
+#   image_templates:
+#   - 'ghcr.io/falcosuessgott/{{.ProjectName}}:{{ .Tag }}-amd64'
+#   - 'ghcr.io/falcosuessgott/{{.ProjectName}}:{{ .Tag }}-arm64'
+
+checksum:
+  name_template: "checksums.txt"
+
+release:
+  disable: true
+
+# changelog:
+#   sort: asc
+#   use: github
+#   filters:
+#     exclude:
+#     - '^test:'
+#     - '^chore'
+#     - 'merge conflict'
+#     - Merge pull request
+#     - Merge remote-tracking branch
+#     - Merge branch
+#     - go mod tidy
+#   groups:
+#     - title: Dependency updates
+#       regexp: '^.*?(feat|fix)\(deps\)!?:.+$'
+#       order: 300
+#     - title: 'New Features'
+#       regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+#       order: 100
+#     - title: 'Bug fixes'
+#       regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+#       order: 200
+#     - title: 'Documentation updates'
+#       regexp: ^.*?doc(\([[:word:]]+\))??!?:.+$
+#       order: 400
+#     - title: Other work
+#       order: 9999

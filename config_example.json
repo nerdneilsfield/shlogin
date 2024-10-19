@@ -1,0 +1,34 @@
+{
+  "cron_exp": "*/1 * * * *",
+  "retry_interval": 10,
+  "retry_times": 3,
+  "log_file": "",
+  "log_level": "info",
+  "login_ip": [
+    {
+      "ip": "10.19.125.111",
+      "username": "2022210401001",
+      "password": "123456",
+      "use_ip": true
+    }
+  ],
+  "login_interface": [
+    {
+      "interface": "eth0",
+      "username": "2022210401001",
+      "password": "123456",
+      "use_ip": true
+    }
+  ],
+  "login_upnp": [
+    {
+      "interface": "eth0",
+      "username": "2022210401001",
+      "password": "123456",
+      "use_ip": true,
+      "exclude": [
+        "10.19.125.111"
+      ]
+    }
+  ]
+}

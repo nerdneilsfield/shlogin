@@ -1,0 +1,19 @@
+#!/sbin/openrc-run
+
+name="shlogin"
+description="ShanghaiTech Network Login Service"
+command="/usr/bin/shlogin"
+command_args="cron /etc/shlogin/${RC_SVCNAME#shlogin.}.toml"
+pidfile="/run/${RC_SVCNAME}.pid"
+command_background="yes"
+
+depend() {
+    need net
+    after firewall
+}
+
+start_pre() {
+    ebegin "Waiting for network to be fully online"
+    sleep 60
+    eend $?
+}
