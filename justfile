@@ -45,7 +45,7 @@ lint:
 
 # 测试发布
 release-test:
-    goreleaser release --rm-dist --snapshot --clean --skip-publish
+    goreleaser release  --snapshot --clean
 
 # 运行 pre-commit 钩子（已注释）
 # pre-commit:
