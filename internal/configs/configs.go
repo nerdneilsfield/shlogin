@@ -50,6 +50,11 @@ type LoginUPnP struct {
 	Exclude   []string `json:"exclude" toml:"exclude"`
 }
 
+func DetectConfigType(path string) string {
+	ext := strings.ToLower(filepath.Ext(path))
+	return ext
+}
+
 func LoadConfig(path string) (*Config, error) {
 	logger.Debug("Loading config", "path", path)
 	var config Config

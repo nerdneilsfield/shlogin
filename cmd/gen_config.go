@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/nerdneilsfield/shlogin/internal/configs"
 	"github.com/spf13/cobra"
@@ -17,13 +16,13 @@ func newGenConfigCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			configType := "toml"
 			if len(args) > 0 {
-				configType = strings.ToLower(args[0])
+				configType = configs.DetectConfigType(args[0])
 			}
 			switch configType {
 			case "toml":
-				return configs.GenDefaultConfigToml("./config_example.toml")
+				return configs.GenDefaultConfigToml(args[0])
 			case "json":
-				return configs.GenDefaultConfigJson("./config_example.json")
+				return configs.GenDefaultConfigJson(args[0])
 			default:
 				return fmt.Errorf("invalid config type: %s", configType)
 			}

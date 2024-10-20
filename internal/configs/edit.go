@@ -20,14 +20,15 @@ func EditConfigFile(path string) error {
 	}
 
 	var editCmd *exec.Cmd
-	if runtime.GOOS == "windows" {
-		editCmd = exec.Command("notepad.exe", path)
-	} else {
-		if editor := os.Getenv("EDITOR"); editor != "" {
-			editCmd = exec.Command(editor, path)
-		} else {
-			editCmd = exec.Command("vim", path)
-		}
+	switch runtime.GOOS {
+	case "windows":
+		editCmd = exec.Command("cmd", "-c", "start", path)
+	case "darwin":
+		editCmd = exec.Command("open", "-a", "TextEdit", path)
+	case "linux":
+		editCmd = exec.Command("xdg-open", path)
+	default:
+		editCmd = exec.Command("vim", path)
 	}
 
 	editCmd.Stdin = os.Stdin
