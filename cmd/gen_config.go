@@ -19,9 +19,9 @@ func newGenConfigCmd() *cobra.Command {
 				configType = configs.DetectConfigType(args[0])
 			}
 			switch configType {
-			case "toml":
+			case ".toml":
 				return configs.GenDefaultConfigToml(args[0])
-			case "json":
+			case ".json":
 				return configs.GenDefaultConfigJson(args[0])
 			default:
 				return fmt.Errorf("invalid config type: %s", configType)

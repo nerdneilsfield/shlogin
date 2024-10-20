@@ -34,3 +34,4 @@ config.toml
 config.json
 test_log.log
 main
+shlogin
