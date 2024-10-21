@@ -35,3 +35,4 @@ config.json
 test_log.log
 main
 shlogin
+.vscode/settings.json

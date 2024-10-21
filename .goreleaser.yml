@@ -22,6 +22,7 @@ builds:
       - windows
       - freebsd
     goarch:
+      - "386"
       - amd64
       - arm64
       - arm
@@ -30,7 +31,7 @@ builds:
       - mipsle
       - riscv64
     goarm:
-      - 7
+      - "7"
     overrides:
       - goos: darwin
         goarch: amd64
