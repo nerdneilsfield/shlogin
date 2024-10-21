@@ -113,6 +113,11 @@ nfpms:
       postinstall: ./scripts/post-install.sh
       postremove: ./scripts/post-remove.sh
 
+release:
+  github:
+    owner: nerdneilsfield
+    name: shlogin
+
 dockers:
 - image_templates:
   - 'nerdneils/{{.ProjectName}}:{{ .Tag }}-amd64'
