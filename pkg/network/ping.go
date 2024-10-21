@@ -7,9 +7,10 @@ import (
 	"time"
 
 	loggerPkg "github.com/nerdneilsfield/shlogin/pkg/logger"
+	"go.uber.org/zap"
 )
 
-var logger = *loggerPkg.GetLogger()
+var logger = loggerPkg.GetLogger()
 
 func Ping(host string) (string, error) {
 	return ping_impl(host)
@@ -17,7 +18,7 @@ func Ping(host string) (string, error) {
 
 // ref: https://github.com/nodeseeker/tcping/blob/main/src/main.go
 func TCPPing(host string) (string, error) {
-	logger.Debug("TCP pinging host", "host", host)
+	logger.Debug("TCP pinging host", zap.String("host", host))
 
 	stopPing := make(chan bool, 1)
 
@@ -37,7 +38,7 @@ func TCPPing(host string) (string, error) {
 
 				sendCount++
 				if err != nil {
-					logger.Error("Failed to connect to host", "host", host, "err", err)
+					logger.Error("Failed to connect to host", zap.String("host", host), zap.Error(err))
 				} else {
 					conn.Close()
 					recvCount++
@@ -58,11 +59,11 @@ func TCPPing(host string) (string, error) {
 	<-stopPing
 
 	if sendCount-recvCount > 0 {
-		logger.Error("Failed to connect to host", "host", host, "send_count", sendCount, "recv_count", recvCount)
+		logger.Error("Failed to connect to host", zap.String("host", host), zap.Int("send_count", sendCount), zap.Int("recv_count", recvCount))
 		return "", fmt.Errorf("failed to connect to host")
 	}
 
-	logger.Debug("TCP ping success", "host", host, "send_count", sendCount, "recv_count", recvCount)
+	logger.Debug("TCP ping success", zap.String("host", host), zap.Int("send_count", sendCount), zap.Int("recv_count", recvCount))
 
 	if sendCount == 0 {
 		return "", fmt.Errorf("no response from tcp ping")
@@ -73,7 +74,7 @@ func TCPPing(host string) (string, error) {
 }
 
 func HttpConnect(host string) (string, error) {
-	logger.Debug("HTTP connecting to host", "host", host)
+	logger.Debug("HTTP connecting to host", zap.String("host", host))
 
 	client := http.Client{
 		Timeout: time.Second * 3,
@@ -84,11 +85,11 @@ func HttpConnect(host string) (string, error) {
 	elapsedTime := time.Since(startTime).Milliseconds()
 	defer client.CloseIdleConnections()
 	if err != nil {
-		logger.Error("Failed to connect to host", "host", host, "err", err)
+		logger.Error("Failed to connect to host", zap.String("host", host), zap.Error(err))
 		return "", err
 	}
 
-	logger.Debug("HTTP connect success", "host", host)
+	logger.Debug("HTTP connect success", zap.String("host", host))
 
 	connectResult := fmt.Sprintf("http connect to %s elapsed_time: %dms", host, elapsedTime)
 	return connectResult, nil

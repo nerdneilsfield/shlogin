@@ -1,0 +1,24 @@
+{"level":"DEBUG","ts":"2024-10-21T20:20:38.467+0800","msg":"Reset logger","logFilePath":"test.log","verbose":true,"saveToFile":true}
+{"level":"INFO","ts":"2024-10-21T20:20:38.467+0800","msg":"Config Check Success"}
+{"level":"DEBUG","ts":"2024-10-21T20:20:38.467+0800","msg":"Loading config","path":"config_example.toml"}
+{"level":"DEBUG","ts":"2024-10-21T20:20:38.468+0800","msg":"Reset logger","logFilePath":"test.log","verbose":true,"saveToFile":true}
+{"level":"DEBUG","ts":"2024-10-21T20:20:38.468+0800","msg":"Pinging host","host":"223.5.5.5"}
+{"level":"DEBUG","ts":"2024-10-21T20:20:41.485+0800","msg":"Ping statistics","host":"223.5.5.5","stats":{"PacketsRecv":3,"PacketsSent":3,"PacketsRecvDuplicates":0,"PacketLoss":0,"IPAddr":{"IP":"223.5.5.5","Zone":""},"Addr":"223.5.5.5","Rtts":[31112483,30940814,30768741],"MinRtt":30768741,"MaxRtt":31112483,"AvgRtt":30940680,"StdDevRtt":140332}}
+{"level":"DEBUG","ts":"2024-10-21T20:20:41.485+0800","msg":"Ping success","host":"223.5.5.5","loss":0,"avg_rtt":"30.94068ms"}
+{"level":"DEBUG","ts":"2024-10-21T20:20:41.485+0800","msg":"TCP pinging host","host":"www.baidu.com:80"}
+{"level":"DEBUG","ts":"2024-10-21T20:20:41.589+0800","msg":"TCP ping success","host":"www.baidu.com:80","send_count":10,"recv_count":10}
+{"level":"DEBUG","ts":"2024-10-21T20:20:41.590+0800","msg":"HTTP connecting to host","host":"https://www.baidu.com"}
+{"level":"DEBUG","ts":"2024-10-21T20:20:41.671+0800","msg":"HTTP connect success","host":"https://www.baidu.com"}
+{"level":"DEBUG","ts":"2024-10-21T20:20:41.672+0800","msg":"Wan connection check success"}
+{"level":"INFO","ts":"2024-10-21T20:20:41.672+0800","msg":"Wan connection is ok, skip login"}
+{"level":"INFO","ts":"2024-10-21T20:20:41.672+0800","msg":"Cron login started","cron_exp":"*/1 * * * *"}
+{"level":"DEBUG","ts":"2024-10-21T20:21:00.009+0800","msg":"Pinging host","host":"223.5.5.5"}
+{"level":"DEBUG","ts":"2024-10-21T20:21:03.024+0800","msg":"Ping statistics","host":"223.5.5.5","stats":{"PacketsRecv":3,"PacketsSent":3,"PacketsRecvDuplicates":0,"PacketLoss":0,"IPAddr":{"IP":"223.5.5.5","Zone":""},"Addr":"223.5.5.5","Rtts":[31031205,30809127,30754524],"MinRtt":30754524,"MaxRtt":31031205,"AvgRtt":30864952,"StdDevRtt":119653}}
+{"level":"DEBUG","ts":"2024-10-21T20:21:03.025+0800","msg":"Ping success","host":"223.5.5.5","loss":0,"avg_rtt":"30.864952ms"}
+{"level":"DEBUG","ts":"2024-10-21T20:21:03.025+0800","msg":"TCP pinging host","host":"www.baidu.com:80"}
+{"level":"DEBUG","ts":"2024-10-21T20:21:03.127+0800","msg":"TCP ping success","host":"www.baidu.com:80","send_count":10,"recv_count":10}
+{"level":"DEBUG","ts":"2024-10-21T20:21:03.127+0800","msg":"HTTP connecting to host","host":"https://www.baidu.com"}
+{"level":"DEBUG","ts":"2024-10-21T20:21:03.174+0800","msg":"HTTP connect success","host":"https://www.baidu.com"}
+{"level":"DEBUG","ts":"2024-10-21T20:21:03.174+0800","msg":"Wan connection check success"}
+{"level":"INFO","ts":"2024-10-21T20:21:03.174+0800","msg":"Wan connection is ok, skip login"}
+{"level":"INFO","ts":"2024-10-21T20:21:28.298+0800","msg":"Shutting down..."}

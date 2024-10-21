@@ -5,6 +5,7 @@ import (
 
 	"github.com/nerdneilsfield/shlogin/pkg/network"
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 )
 
 func newConnectionCmd() *cobra.Command {
@@ -79,7 +80,7 @@ func newHttpConnectCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			fmt.Println(connectResult)
+			logger.Info("HTTP connect result", zap.String("result", connectResult))
 			return nil
 		},
 	}
@@ -97,7 +98,7 @@ func newCheckLoginServerCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			fmt.Println("Connection to login server check success")
+			logger.Info("Connection to login server check success")
 			return nil
 		},
 	}
@@ -115,7 +116,7 @@ func newCheckShLanCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			fmt.Println("Connection to ShLan check success")
+			logger.Info("Connection to ShLan check success")
 			return nil
 		},
 	}

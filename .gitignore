@@ -20,6 +20,10 @@
 # Dist directory
 dist/
 
+# Editor
+.vscode/
+.idea/
+
 # Go workspace file
 go.work
 go.work.sum

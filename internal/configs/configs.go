@@ -10,12 +10,13 @@ import (
 
 	"github.com/BurntSushi/toml"
 	loggerPkg "github.com/nerdneilsfield/shlogin/pkg/logger"
+	"go.uber.org/zap"
 )
 
 //go:embed config_example.toml
 var defaultConfigFile embed.FS
 
-var logger = *loggerPkg.GetLogger()
+var logger = loggerPkg.GetLogger()
 
 type Config struct {
 	CronExp        *string          `json:"cron_exp" toml:"cron_exp"`
@@ -56,7 +57,7 @@ func DetectConfigType(path string) string {
 }
 
 func LoadConfig(path string) (*Config, error) {
-	logger.Debug("Loading config", "path", path)
+	logger.Debug("Loading config", zap.String("path", path))
 	var config Config
 
 	ext := strings.ToLower(filepath.Ext(path))
@@ -69,21 +70,24 @@ func LoadConfig(path string) (*Config, error) {
 	case ".json":
 		file, err := os.ReadFile(path)
 		if err != nil {
-			logger.Error("Failed to read file", "path", path, "err:", err)
+			logger.Error("Failed to read file", zap.String("path", path), zap.Error(err))
 			return nil, err
 		}
 		if err := json.Unmarshal(file, &config); err != nil {
-			logger.Error("Failed to unmarshal json", "path", path, "err:", err)
+			logger.Error("Failed to unmarshal json", zap.String("path", path), zap.Error(err))
 			return nil, err
 		}
 	default:
-		logger.Error("Unsupported file extension", "path", path, "extension", ext)
+		logger.Error("Unsupported file extension", zap.String("path", path), zap.String("extension", ext))
 		return nil, fmt.Errorf("unsupported file extension: %s", ext)
 	}
 
-	if config.LogFile != nil {
-		loggerPkg.SaveLogToFile(*config.LogFile)
+	if config.LogFile != nil && *config.LogFile != "" {
+		logger.SetLogFilePath(*config.LogFile)
+		logger.SetVerbose(logger.GetVerbose())
+		logger.SetSaveToFile(true)
 	}
+	logger.Reset()
 
 	return &config, nil
 }
@@ -163,20 +167,20 @@ func GenDefaultConfigToml(outputPath string) error {
 	}
 
 	if !strings.HasSuffix(outputPath, ".toml") {
-		logger.Error("Output path must have a .toml extension", "Given Path", outputPath)
+		logger.Error("Output path must have a .toml extension", zap.String("Given Path", outputPath))
 		return fmt.Errorf("output path must have a .toml extension: %s", outputPath)
 	}
 
 	// copy embeded file to savePath
 	file, err := defaultConfigFile.ReadFile("config_example.toml")
 	if err != nil {
-		logger.Error("Failed to read default config file", "err:", err)
+		logger.Error("Failed to read default config file", zap.Error(err))
 		return fmt.Errorf("failed to read default config file: %w", err)
 	}
 
 	err = os.WriteFile(outputPath, file, 0o644)
 	if err != nil {
-		logger.Error("Failed to write default config file", "err:", err)
+		logger.Error("Failed to write default config file", zap.Error(err))
 		return fmt.Errorf("failed to write default config file: %w", err)
 	}
 	return nil
@@ -189,36 +193,36 @@ func GenDefaultConfigJson(outputPath string) error {
 	}
 
 	if !strings.HasSuffix(outputPath, ".json") {
-		logger.Error("Output path must have a .json extension", "Given Path", outputPath)
+		logger.Error("Output path must have a .json extension", zap.String("Given Path", outputPath))
 		return fmt.Errorf("output path must have a .json extension: %s", outputPath)
 	}
 
 	var defaultConfig Config
 	_, err := toml.DecodeFS(defaultConfigFile, "config_example.toml", &defaultConfig)
 	if err != nil {
-		logger.Error("Failed to decode default config file", "err:", err)
+		logger.Error("Failed to decode default config file", zap.Error(err))
 		return fmt.Errorf("failed to decode default config file: %w", err)
 	}
 
 	jsonData, err := json.MarshalIndent(defaultConfig, "", "  ")
 	if err != nil {
-		logger.Error("Failed to marshal default config file", "err:", err)
+		logger.Error("Failed to marshal default config file", zap.Error(err))
 		return fmt.Errorf("failed to marshal default config file: %w", err)
 	}
 
 	err = os.WriteFile(outputPath, jsonData, 0o644)
 	if err != nil {
-		logger.Error("Failed to write default config file", "err:", err)
+		logger.Error("Failed to write default config file", zap.Error(err))
 		return fmt.Errorf("failed to write default config file: %w", err)
 	}
 	return nil
 }
 
 func CheckConfig(path string) error {
-	logger.Debug("Checking config", "path", path)
+	logger.Debug("Checking config", zap.String("path", path))
 	config, err := LoadConfig(path)
 	if err != nil {
-		logger.Error("Failed to load config", "err:", err)
+		logger.Error("Failed to load config", zap.Error(err))
 		return fmt.Errorf("failed to load config: %w", err)
 	}
 
@@ -231,19 +235,19 @@ func CheckConfig(path string) error {
 	// Every method shold have username and password
 	for _, loginIP := range config.LoginIP {
 		if loginIP.Username == nil || loginIP.Password == nil {
-			logger.Error("LoginIP must have username and password", "LoginIP", loginIP.IP)
+			logger.Error("LoginIP must have username and password", zap.String("LoginIP", *loginIP.IP))
 			return fmt.Errorf("LoginIP must have username and password: %v", loginIP.IP)
 		}
 	}
 	for _, loginInterface := range config.LoginInterface {
 		if loginInterface.Username == nil || loginInterface.Password == nil {
-			logger.Error("LoginInterface must have username and password", "LoginInterface", loginInterface.Interface)
+			logger.Error("LoginInterface must have username and password", zap.String("LoginInterface", *loginInterface.Interface))
 			return fmt.Errorf("LoginInterface must have username and password: %v", loginInterface.Interface)
 		}
 	}
 	for _, loginUPnP := range config.LoginUPnP {
 		if loginUPnP.Username == nil || loginUPnP.Password == nil {
-			logger.Error("LoginUPnP must have username and password", "LoginUPnP", loginUPnP.Interface)
+			logger.Error("LoginUPnP must have username and password", zap.String("LoginUPnP", *loginUPnP.Interface))
 			return fmt.Errorf("LoginUPnP must have username and password: %v", loginUPnP.Interface)
 		}
 	}
@@ -254,19 +258,19 @@ func CheckConfig(path string) error {
 }
 
 func SaveConfigToToml(config *Config, path string) error {
-	logger.Debug("Saving config to toml", "path", path)
+	logger.Debug("Saving config to toml", zap.String("path", path))
 	if path == "" {
 		path = "./config.toml"
 	}
 
 	if !strings.HasSuffix(path, ".toml") {
-		logger.Error("Output path must have a .toml extension", "Given Path", path)
+		logger.Error("Output path must have a .toml extension", zap.String("Given Path", path))
 		return fmt.Errorf("output path must have a .toml extension: %s", path)
 	}
 
 	file, err := os.Create(path)
 	if err != nil {
-		logger.Error("Failed to create config file", "err:", err)
+		logger.Error("Failed to create config file", zap.Error(err))
 		return fmt.Errorf("failed to create config file: %w", err)
 	}
 	defer file.Close()
@@ -274,53 +278,53 @@ func SaveConfigToToml(config *Config, path string) error {
 	encoder := toml.NewEncoder(file)
 	err = encoder.Encode(config)
 	if err != nil {
-		logger.Error("Failed to encode config file", "err:", err)
+		logger.Error("Failed to encode config file", zap.Error(err))
 		return fmt.Errorf("failed to encode config file: %w", err)
 	}
 
-	logger.Info("Config saved to toml", "path", path)
+	logger.Info("Config saved to toml", zap.String("path", path))
 	return nil
 }
 
 func SaveConfigToJson(config *Config, path string) error {
-	logger.Debug("Saving config to json", "path", path)
+	logger.Debug("Saving config to json", zap.String("path", path))
 	if path == "" {
 		path = "./config.json"
 	}
 
 	if !strings.HasSuffix(path, ".json") {
-		logger.Error("Output path must have a .json extension", "Given Path", path)
+		logger.Error("Output path must have a .json extension", zap.String("Given Path", path))
 		return fmt.Errorf("output path must have a .json extension: %s", path)
 	}
 
 	jsonData, err := json.MarshalIndent(config, "", "  ")
 	if err != nil {
-		logger.Error("Failed to marshal config file", "err:", err)
+		logger.Error("Failed to marshal config file", zap.Error(err))
 		return fmt.Errorf("failed to marshal config file: %w", err)
 	}
 
 	file, err := os.Create(path)
 	if err != nil {
-		logger.Error("Failed to create config file", "err:", err)
+		logger.Error("Failed to create config file", zap.Error(err))
 		return fmt.Errorf("failed to create config file: %w", err)
 	}
 	defer file.Close()
 
 	_, err = file.Write(jsonData)
 	if err != nil {
-		logger.Error("Failed to write config file", "err:", err)
+		logger.Error("Failed to write config file", zap.Error(err))
 		return fmt.Errorf("failed to write config file: %w", err)
 	}
 
-	logger.Info("Config saved to json", "path", path)
+	logger.Info("Config saved to json", zap.String("path", path))
 	return nil
 }
 
 func ConvertConfig(inputPath, outputPath string) error {
-	logger.Debug("Converting config", "inputPath", inputPath, "outputPath", outputPath)
+	logger.Debug("Converting config", zap.String("inputPath", inputPath), zap.String("outputPath", outputPath))
 
 	if inputPath == outputPath {
-		logger.Error("Input path and output path are the same", "inputPath", inputPath, "outputPath", outputPath)
+		logger.Error("Input path and output path are the same", zap.String("inputPath", inputPath), zap.String("outputPath", outputPath))
 		return fmt.Errorf("input path and output path are the same: %s", inputPath)
 	}
 
@@ -328,18 +332,18 @@ func ConvertConfig(inputPath, outputPath string) error {
 	extOutput := strings.ToLower(filepath.Ext(outputPath))
 
 	if extInput != ".toml" && extInput != ".json" {
-		logger.Error("Input path must have a .toml or .json extension", "Given Path", inputPath)
+		logger.Error("Input path must have a .toml or .json extension", zap.String("Given Path", inputPath))
 		return fmt.Errorf("input path must have a .toml or .json extension: %s", inputPath)
 	}
 
 	if extOutput != ".toml" && extOutput != ".json" {
-		logger.Error("Output path must have a .toml or .json extension", "Given Path", outputPath)
+		logger.Error("Output path must have a .toml or .json extension", zap.String("Given Path", outputPath))
 		return fmt.Errorf("output path must have a .toml or .json extension: %s", outputPath)
 	}
 
 	config, err := LoadConfig(inputPath)
 	if err != nil {
-		logger.Error("Failed to load config", "err:", err)
+		logger.Error("Failed to load config", zap.Error(err))
 		return fmt.Errorf("failed to load config: %w", err)
 	}
 
@@ -350,6 +354,6 @@ func ConvertConfig(inputPath, outputPath string) error {
 		return SaveConfigToJson(config, outputPath)
 	}
 
-	logger.Info("Config converted", "inputPath", inputPath, "outputPath", outputPath)
+	logger.Info("Config converted", zap.String("inputPath", inputPath), zap.String("outputPath", outputPath))
 	return nil
 }

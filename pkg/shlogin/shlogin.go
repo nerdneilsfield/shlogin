@@ -13,9 +13,10 @@ import (
 	"github.com/buger/jsonparser"
 	"github.com/google/uuid"
 	loggerPkg "github.com/nerdneilsfield/shlogin/pkg/logger"
+	"go.uber.org/zap"
 )
 
-var logger = *loggerPkg.GetLogger()
+var logger = loggerPkg.GetLogger()
 
 const (
 	ACIP          = "10.13.7.59"
@@ -89,17 +90,17 @@ func DoLogin(form url.Values, useIp bool) (bool, string) {
 	status, err := jsonparser.GetBoolean(body, "success")
 	Check(err)
 	if status {
-		logger.Info("Login success!", "User", form.Get("userName"), "IP", form.Get("uaddress"), "time", time.Now().Format("2006-01-02 15:04:05"))
+		logger.Info("Login success!", zap.String("User", form.Get("userName")), zap.String("IP", form.Get("uaddress")), zap.String("time", time.Now().Format("2006-01-02 15:04:05")))
 		return true, "Login success!"
 	}
 
 	errorCode, err := jsonparser.GetString(body, "errorcode")
 	Check(err)
-	logger.Error("Login failed! ", "errorcode", errorCode)
+	logger.Error("Login failed! ", zap.String("errorcode", errorCode))
 	var prettyJSON bytes.Buffer
 	err = json.Indent(&prettyJSON, body, "", "\t")
 	Check(err)
-	logger.Error("Login failed! ", "body", prettyJSON.String())
+	logger.Error("Login failed! ", zap.String("body", prettyJSON.String()))
 	return false, "Login failed! " + prettyJSON.String()
 }
 

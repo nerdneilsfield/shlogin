@@ -2,7 +2,7 @@ log_level = "info"
 cron_exp = "*/1 * * * *" # 每 1 分钟检查一次
 retry_interval = 10 # 重试间隔时间，单位为秒
 retry_times = 3 # 重试次数
-log_file = "" # 日志文件路径
+log_file = "test.log" # 日志文件路径
 
 [[login_ip]] # 指定 IP 进行登录
 ip = "10.19.125.111"

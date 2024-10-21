@@ -9,28 +9,29 @@ import (
 
 	"github.com/huin/goupnp/dcps/internetgateway1"
 	"github.com/huin/goupnp/dcps/internetgateway2"
+	"go.uber.org/zap"
 )
 
 // GetExternalIP 获取指定接口的路由器Wan口IP
 func GetExternalIP(interfaceName string) (string, error) {
 	ip, err := GetInterfaceIP(interfaceName)
 	if err != nil {
-		logger.Error("Failed to get interface %s IP", "interfaceName", interfaceName, "err:", err)
+		logger.Error("Failed to get interface %s IP", zap.String("interfaceName", interfaceName), zap.Error(err))
 		return "", err
 	}
 
 	httpClient, err := createHttpClient(ip)
 	if err != nil {
-		logger.Error("Failed to create HTTP client", "interfaceName", interfaceName, "err:", err)
+		logger.Error("Failed to create HTTP client", zap.String("interfaceName", interfaceName), zap.Error(err))
 		return "", err
 	}
 
 	externalIP, err := getExternalIPv1(httpClient)
 	if err != nil || externalIP == "" {
-		logger.Error("Failed to get external IP using IGD v1", "interfaceName", interfaceName, "err:", err)
+		logger.Error("Failed to get external IP using IGD v1", zap.String("interfaceName", interfaceName), zap.Error(err))
 		externalIP, err = getExternalIPv2(httpClient)
 		if err != nil || externalIP == "" {
-			logger.Error("Failed to get external IP using IGD v2", "interfaceName", interfaceName, "err:", err)
+			logger.Error("Failed to get external IP using IGD v2", zap.String("interfaceName", interfaceName), zap.Error(err))
 			return "", err
 		}
 	}
@@ -42,13 +43,13 @@ func GetExternalIP(interfaceName string) (string, error) {
 func GetInterfaceIP(interfaceName string) (net.IP, error) {
 	iface, err := net.InterfaceByName(interfaceName)
 	if err != nil {
-		logger.Error("Failed to get interface", "interfaceName", interfaceName, "err:", err)
+		logger.Error("Failed to get interface", zap.String("interfaceName", interfaceName), zap.Error(err))
 		return nil, err
 	}
 
 	addrs, err := iface.Addrs()
 	if err != nil {
-		logger.Error("Failed to get addresses for interface", "interfaceName", interfaceName, "err:", err)
+		logger.Error("Failed to get addresses for interface", zap.String("interfaceName", interfaceName), zap.Error(err))
 		return nil, err
 	}
 
@@ -60,7 +61,7 @@ func GetInterfaceIP(interfaceName string) (net.IP, error) {
 		}
 	}
 
-	logger.Error("No IP address found for interface", "interfaceName", interfaceName)
+	logger.Error("No IP address found for interface", zap.String("interfaceName", interfaceName))
 	return nil, fmt.Errorf("no IP address found for interface %s", interfaceName)
 }
 
@@ -94,7 +95,7 @@ func getExternalIPv1(httpClient *http.Client) (string, error) {
 
 	clients, _, err := internetgateway1.NewWANIPConnection1ClientsCtx(ctx)
 	if err != nil {
-		logger.Error("Failed to get IGD v1 clients", "err:", err)
+		logger.Error("Failed to get IGD v1 clients", zap.Error(err))
 		return "", err
 	}
 	if len(clients) == 0 {
@@ -106,7 +107,7 @@ func getExternalIPv1(httpClient *http.Client) (string, error) {
 		client.SOAPClient.HTTPClient = *httpClient
 		ip, err := client.GetExternalIPAddress()
 		if err == nil && ip != "" {
-			logger.Debug("External IP using IGD v1", "ip:", ip)
+			logger.Debug("External IP using IGD v1", zap.String("ip", ip))
 			return ip, nil
 		}
 	}
@@ -121,7 +122,7 @@ func getExternalIPv2(httpClient *http.Client) (string, error) {
 
 	clients, _, err := internetgateway2.NewWANIPConnection2ClientsCtx(ctx)
 	if err != nil {
-		logger.Error("Failed to get IGD v2 clients", "err:", err)
+		logger.Error("Failed to get IGD v2 clients", zap.Error(err))
 		return "", err
 	}
 	if len(clients) == 0 {
@@ -133,7 +134,7 @@ func getExternalIPv2(httpClient *http.Client) (string, error) {
 		client.SOAPClient.HTTPClient = *httpClient
 		ip, err := client.GetExternalIPAddress()
 		if err == nil && ip != "" {
-			logger.Debug("External IP using IGD v2", "ip:", ip)
+			logger.Debug("External IP using IGD v2", zap.String("ip", ip))
 			return ip, nil
 		}
 	}

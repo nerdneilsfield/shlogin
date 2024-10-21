@@ -3,12 +3,12 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/inconshreveable/log15"
 	loggerPkg "github.com/nerdneilsfield/shlogin/pkg/logger"
 	"github.com/spf13/cobra"
 )
 
 var verbose bool
+var logger = loggerPkg.GetLogger()
 
 func newRootCmd(version string, buildTime string, gitCommit string) *cobra.Command {
 	cmd := &cobra.Command{
@@ -19,10 +19,11 @@ func newRootCmd(version string, buildTime string, gitCommit string) *cobra.Comma
 		},
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if verbose {
-				loggerPkg.UpdateLogLevel(log15.LvlDebug)
+				logger.SetVerbose(true)
 			} else {
-				loggerPkg.UpdateLogLevel(log15.LvlInfo)
+				logger.SetVerbose(false)
 			}
+			logger.Reset()
 		},
 	}
 

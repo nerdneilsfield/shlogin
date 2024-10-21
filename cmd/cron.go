@@ -4,6 +4,7 @@ import (
 	"github.com/nerdneilsfield/shlogin/internal/configs"
 	"github.com/nerdneilsfield/shlogin/internal/login"
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 )
 
 func newCronCmd() *cobra.Command {
@@ -15,12 +16,12 @@ func newCronCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			err := configs.CheckConfig(args[0])
 			if err != nil {
-				logger.Error("Failed to check config", "error", err)
+				logger.Error("Failed to check config", zap.Error(err))
 				return err
 			}
 			config, err := configs.LoadConfig(args[0])
 			if err != nil {
-				logger.Error("Failed to load config", "error", err)
+				logger.Error("Failed to load config", zap.Error(err))
 				return err
 			}
 			return login.CronLogin(config)
