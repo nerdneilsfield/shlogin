@@ -131,6 +131,8 @@ dockers:
   - "--label=org.opencontainers.image.version={{.Version}}"
   - "--label=org.opencontainers.image.source={{.GitURL}}"
   - "--platform=linux/amd64"
+  extra_files:
+    - config_example.toml
 - image_templates:
   - 'nerdneils/{{.ProjectName}}:{{ .Tag }}-arm64'
   - 'ghcr.io/nerdneilsfield/{{.ProjectName}}:{{ .Tag }}-arm64'
@@ -150,6 +152,8 @@ dockers:
   - "--label=org.opencontainers.image.source={{.GitURL}}"
   - "--platform=linux/arm64"
   goarch: arm64
+  extra_files:
+    - config_example.toml
 
 docker_manifests:
 - name_template: 'nerdneils/{{.ProjectName}}:{{ .Tag }}'
