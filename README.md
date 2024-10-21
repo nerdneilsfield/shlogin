@@ -99,13 +99,15 @@ go install github.com/nerdneilsfield/shlogin@latest
 <summary> Docker 的各种安装方法 / Various installation methods for Docker</summary>
 
 ```
-docker pull nerdneils/shlogin:latest
+docker pull nerdneils/shlogin:latest # dockerhub
+docker pull ghcr.io/nerdneilsfield/shlogin:latest # ghcr
 ```
 
 #### 运行 / Run
 
 ```
-docker run --network host -it -v ./config.toml:/etc/shlogin/config.toml nerdneils/shlogin:latest
+docker run --network host -it -v ./config.toml:/etc/shlogin/config.toml nerdneils/shlogin:latest # dockerhub
+docker run --network host -it -v ./config.toml:/etc/shlogin/config.toml ghcr.io/nerdneilsfield/shlogin:latest # ghcr
 ```
 
 > 注意: 需要将配置文件挂载到容器中。
@@ -117,7 +119,8 @@ docker run --network host -it -v ./config.toml:/etc/shlogin/config.toml nerdneil
 ```yaml
 services:
   shlogin:
-    image: nerdneils/shlogin:latest
+    image: nerdneils/shlogin:latest # dockerhub
+    #image: ghcr.io/nerdneilsfield/shlogin:latest # ghcr
     volumes:
       - ./config.toml:/etc/shlogin/config.toml
     restart: always
