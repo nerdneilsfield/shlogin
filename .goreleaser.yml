@@ -113,61 +113,61 @@ nfpms:
       postinstall: ./scripts/post-install.sh
       postremove: ./scripts/post-remove.sh
 
-# dockers:
-# - image_templates:
-#   - 'falcosuessgott/{{.ProjectName}}:{{ .Tag }}-amd64'
-#   - 'ghcr.io/falcosuessgott/{{.ProjectName}}:{{ .Tag }}-amd64'
-#   dockerfile: Dockerfile
-#   use: buildx
-#   build_flag_templates:
-#   - "--pull"
-#   - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/FalcoSuessgott/golang-cli-template/master/README.md"
-#   - "--label=io.artifacthub.package.maintainers=[{\"name\":\"Tom Morelly\",\"email\":\"tommorelly@gmail.com\"}]"
-#   - "--label=io.artifacthub.package.license=MIT"
-#   - "--label=org.opencontainers.image.description=A general purpose golang CLI template for Github and Gitlab"
-#   - "--label=org.opencontainers.image.created={{.Date}}"
-#   - "--label=org.opencontainers.image.name={{.ProjectName}}"
-#   - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-#   - "--label=org.opencontainers.image.version={{.Version}}"
-#   - "--label=org.opencontainers.image.source={{.GitURL}}"
-#   - "--platform=linux/amd64"
-# - image_templates:
-#   - 'falcosuessgott/{{.ProjectName}}:{{ .Tag }}-arm64'
-#   - 'ghcr.io/falcosuessgott/{{.ProjectName}}:{{ .Tag }}-arm64'
-#   dockerfile:  Dockerfile
-#   use: buildx
-#   build_flag_templates:
-#   - "--pull"
-#   - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/FalcoSuessgott/golang-cli-template/master/README.md"
-#   - "--label=io.artifacthub.package.logo-url=https://raw.githubusercontent.com/FalcoSuessgott/golang-cli-template/master/www/static/images/logo.png"
-#   - "--label=io.artifacthub.package.maintainers=[{\"name\":\"Tom Morelly\",\"email\":\"tommorelly@gmail.com\"}]"
-#   - "--label=io.artifacthub.package.license=MIT"
-#   - "--label=org.opencontainers.image.description=A general purpose golang CLI template for Github and Gitlab"
-#   - "--label=org.opencontainers.image.created={{.Date}}"
-#   - "--label=org.opencontainers.image.name={{.ProjectName}}"
-#   - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-#   - "--label=org.opencontainers.image.version={{.Version}}"
-#   - "--label=org.opencontainers.image.source={{.GitURL}}"
-#   - "--platform=linux/arm64"
-#   goarch: arm64
+dockers:
+- image_templates:
+  - 'nerdneils/{{.ProjectName}}:{{ .Tag }}-amd64'
+  - 'ghcr.io/nerdneilsfield/{{.ProjectName}}:{{ .Tag }}-amd64'
+  dockerfile: Dockerfile
+  use: buildx
+  build_flag_templates:
+  - "--pull"
+  - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/nerdneilsfield/shlogin/master/README.md"
+  - "--label=io.artifacthub.package.maintainers=[{\"name\":\"dengqqi\",\"email\":\"dengqqi935@gmail.com\"}]"
+  - "--label=io.artifacthub.package.license=MIT"
+  - "--label=org.opencontainers.image.description=A command line tool to login to ShanghaiTech Network"
+  - "--label=org.opencontainers.image.created={{.Date}}"
+  - "--label=org.opencontainers.image.name={{.ProjectName}}"
+  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+  - "--label=org.opencontainers.image.version={{.Version}}"
+  - "--label=org.opencontainers.image.source={{.GitURL}}"
+  - "--platform=linux/amd64"
+- image_templates:
+  - 'nerdneils/{{.ProjectName}}:{{ .Tag }}-arm64'
+  - 'ghcr.io/nerdneilsfield/{{.ProjectName}}:{{ .Tag }}-arm64'
+  dockerfile:  Dockerfile
+  use: buildx
+  build_flag_templates:
+  - "--pull"
+  - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/nerdneilsfield/shlogin/master/README.md"
+  - "--label=io.artifacthub.package.logo-url=https://raw.githubusercontent.com/nerdneilsfield/shlogin/master/www/static/images/logo.png"
+  - "--label=io.artifacthub.package.maintainers=[{\"name\":\"dengqqi\",\"email\":\"dengqqi935@gmail.com\"}]"
+  - "--label=io.artifacthub.package.license=MIT"
+  - "--label=org.opencontainers.image.description=A command line tool to login to ShanghaiTech Network"
+  - "--label=org.opencontainers.image.created={{.Date}}"
+  - "--label=org.opencontainers.image.name={{.ProjectName}}"
+  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+  - "--label=org.opencontainers.image.version={{.Version}}"
+  - "--label=org.opencontainers.image.source={{.GitURL}}"
+  - "--platform=linux/arm64"
+  goarch: arm64
 
-# docker_manifests:
-# - name_template: 'falcosuessgott/{{.ProjectName}}:{{ .Tag }}'
-#   image_templates:
-#   - 'falcosuessgott/{{.ProjectName}}:{{ .Tag }}-amd64'
-#   - 'falcosuessgott/{{.ProjectName}}:{{ .Tag }}-arm64'
-# - name_template: 'ghcr.io/falcosuessgott/{{.ProjectName}}:{{ .Tag }}'
-#   image_templates:
-#   - 'ghcr.io/falcosuessgott/{{.ProjectName}}:{{ .Tag }}-amd64'
-#   - 'ghcr.io/falcosuessgott/{{.ProjectName}}:{{ .Tag }}-arm64'
-# - name_template: 'falcosuessgott/{{.ProjectName}}:latest'
-#   image_templates:
-#   - 'falcosuessgott/{{.ProjectName}}:{{ .Tag }}-amd64'
-#   - 'falcosuessgott/{{.ProjectName}}:{{ .Tag }}-arm64'
-# - name_template: 'ghcr.io/falcosuessgott/{{.ProjectName}}:latest'
-#   image_templates:
-#   - 'ghcr.io/falcosuessgott/{{.ProjectName}}:{{ .Tag }}-amd64'
-#   - 'ghcr.io/falcosuessgott/{{.ProjectName}}:{{ .Tag }}-arm64'
+docker_manifests:
+- name_template: 'nerdneils/{{.ProjectName}}:{{ .Tag }}'
+  image_templates:
+  - 'nerdneils/{{.ProjectName}}:{{ .Tag }}-amd64'
+  - 'nerdneils/{{.ProjectName}}:{{ .Tag }}-arm64'
+- name_template: 'ghcr.io/nerdneilsfield/{{.ProjectName}}:{{ .Tag }}'
+  image_templates:
+  - 'ghcr.io/nerdneilsfield/{{.ProjectName}}:{{ .Tag }}-amd64'
+  - 'ghcr.io/nerdneilsfield/{{.ProjectName}}:{{ .Tag }}-arm64'
+- name_template: 'nerdneils/{{.ProjectName}}:latest'
+  image_templates:
+  - 'nerdneils/{{.ProjectName}}:{{ .Tag }}-amd64'
+  - 'nerdneils/{{.ProjectName}}:{{ .Tag }}-arm64'
+- name_template: 'ghcr.io/nerdneilsfield/{{.ProjectName}}:latest'
+  image_templates:
+  - 'ghcr.io/nerdneilsfield/{{.ProjectName}}:{{ .Tag }}-amd64'
+  - 'ghcr.io/nerdneilsfield/{{.ProjectName}}:{{ .Tag }}-arm64'
 
 checksum:
   name_template: "checksums.txt"
@@ -175,30 +175,30 @@ checksum:
 release:
   disable: true
 
-# changelog:
-#   sort: asc
-#   use: github
-#   filters:
-#     exclude:
-#     - '^test:'
-#     - '^chore'
-#     - 'merge conflict'
-#     - Merge pull request
-#     - Merge remote-tracking branch
-#     - Merge branch
-#     - go mod tidy
-#   groups:
-#     - title: Dependency updates
-#       regexp: '^.*?(feat|fix)\(deps\)!?:.+$'
-#       order: 300
-#     - title: 'New Features'
-#       regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
-#       order: 100
-#     - title: 'Bug fixes'
-#       regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
-#       order: 200
-#     - title: 'Documentation updates'
-#       regexp: ^.*?doc(\([[:word:]]+\))??!?:.+$
-#       order: 400
-#     - title: Other work
-#       order: 9999
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+    - '^test:'
+    - '^chore'
+    - 'merge conflict'
+    - Merge pull request
+    - Merge remote-tracking branch
+    - Merge branch
+    - go mod tidy
+  groups:
+    - title: Dependency updates
+      regexp: '^.*?(feat|fix)\(deps\)!?:.+$'
+      order: 300
+    - title: 'New Features'
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      order: 100
+    - title: 'Bug fixes'
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      order: 200
+    - title: 'Documentation updates'
+      regexp: ^.*?doc(\([[:word:]]+\))??!?:.+$
+      order: 400
+    - title: Other work
+      order: 9999

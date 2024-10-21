@@ -17,9 +17,9 @@ SHLogin is a tool for logging into the ShanghaiTech University network.
 ## Roadmap
 
 - [x] 使用 UPnP 获得路由器 IP 地址
-- [] 更好的日志系统和终端显示
-- [] 搭配 DDNS 服务使用
-    - [] cloudflare
+- [x] 更好的日志系统和终端显示
+- [ ] 搭配 DDNS 服务使用
+    - [ ] cloudflare
     - [ ] alidns
     - [ ] dnspod
 
