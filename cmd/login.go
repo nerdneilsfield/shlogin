@@ -1,30 +1,61 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/nerdneilsfield/shlogin/internal/configs"
 	"github.com/nerdneilsfield/shlogin/internal/login"
+	"github.com/nerdneilsfield/shlogin/pkg/shlogin"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 )
 
+var (
+	username   string
+	password   string
+	ip         string
+	rawIP      bool
+	configFile string
+)
+
 func newLoginCmd() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:          "login",
 		Short:        "Use config file to login to shlogin",
 		Args:         cobra.ExactArgs(1),
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := configs.CheckConfig(args[0])
-			if err != nil {
-				logger.Error("Failed to check config", zap.Error(err))
-				return err
+			if configFile != "" {
+				err := configs.CheckConfig(configFile)
+				if err != nil {
+					logger.Error("Failed to check config", zap.Error(err))
+					return err
+				}
+				config, err := configs.LoadConfig(args[0])
+				if err != nil {
+					logger.Error("Failed to load config", zap.Error(err))
+					return err
+				}
+				return login.LoginWithConfig(config)
+			} else {
+				if username == "" || password == "" || ip == "" {
+					logger.Error("username, password and ip are required")
+					return fmt.Errorf("username, password and ip are required")
+				}
+				success, msg := shlogin.LoginToShlogin(username, password, ip, rawIP)
+				if !success {
+					logger.Error("Login failed", zap.String("message", msg))
+					return fmt.Errorf("login failed: %s", msg)
+				}
+				return nil
 			}
-			config, err := configs.LoadConfig(args[0])
-			if err != nil {
-				logger.Error("Failed to load config", zap.Error(err))
-				return err
-			}
-			return login.LoginWithConfig(config)
 		},
 	}
+
+	cmd.Flags().StringVarP(&username, "username", "u", "", "username")
+	cmd.Flags().StringVarP(&password, "password", "p", "", "password")
+	cmd.Flags().StringVarP(&ip, "ip", "i", "", "ip")
+	cmd.Flags().BoolVarP(&rawIP, "raw-ip", "r", false, "use raw ip of login server, not use domain name of login server")
+	cmd.Flags().StringVarP(&configFile, "config", "c", "", "config file")
+	return cmd
 }

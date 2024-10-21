@@ -146,12 +146,27 @@ shlogin [command]
 ### 登录 / Login
 
 ```
-shlogin login [config_file_path]
+Use config file to login to shlogin
+
+Usage:
+  shlogin login [flags]
+
+Flags:
+  -c, --config string     config file
+  -h, --help              help for login
+  -i, --ip string         ip
+  -p, --password string   password
+  -r, --raw-ip            use raw ip of login server, not use domain name of login server
+  -u, --username string   username
+
+Global Flags:
+  -v, --verbose   Enable verbose output
 ```
 
-使用指定的配置文件登录网络。
+使用 `-c` 指定配置文件登录网络。也可以直接使用 `-u` `-p` `-i` `-r` 参数直接登录。
 
-Login to the network using the specified configuration file.
+Login to the network using `-c` to specify the configuration file. You can also use `-u` `-p` `-i` `-r` parameters directly to login.
+
 
 ### 设置定时任务 / Set up cron jobs
 
