@@ -29,6 +29,19 @@ SHLogin is a tool for logging into the ShanghaiTech University network.
 
 <summary>下载安装包并配置 / Download and install package and configure</summary>
 
+### Homebrew / Scoop 安装
+
+```bash
+# macOS / Linux
+brew install --cask nerdneilsfield/apps/shlogin
+```
+
+```powershell
+# Windows
+scoop bucket add nerdneilsfield https://github.com/nerdneilsfield/homebrew-apps
+scoop install nerdneilsfield/shlogin
+```
+
 ### 下载安装包 / Download and install package
 
 在 [Release](https://github.com/nerdneilsfield/shlogin/releases) 页面下载对应平台的安装包。

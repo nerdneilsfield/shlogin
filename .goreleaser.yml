@@ -208,3 +208,33 @@ changelog:
       order: 400
     - title: Other work
       order: 9999
+
+# Publish to the nerdneilsfield/homebrew-apps tap and Scoop bucket.
+homebrew_casks:
+  - name: shlogin
+    homepage: https://github.com/nerdneilsfield/shlogin
+    description: Library and CLI for shlogin
+    binaries:
+      - shlogin
+    directory: Casks
+    repository:
+      owner: nerdneilsfield
+      name: homebrew-apps
+      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
+    hooks:
+      post:
+        install_steps: |
+          on_macos do
+            run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{ .StagedPath }}/shlogin"]
+          end
+
+scoops:
+  - name: shlogin
+    homepage: https://github.com/nerdneilsfield/shlogin
+    description: Library and CLI for shlogin
+    license: MIT
+    directory: bucket
+    repository:
+      owner: nerdneilsfield
+      name: homebrew-apps
+      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
